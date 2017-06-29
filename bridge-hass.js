@@ -2,19 +2,56 @@ const exec = require('child_process').exec;
 
 //mock devices
 const devices = [];
-for(let i = 0; i< 30; i++) {
-  devices.push({
-    name: 'Device' + i,
-    deviceId: i.toString(),
-    actions: {
-      switch: ['on', 'off']
+const hass_entity_to_device = {
+  'fan' : {
+    type : 'fan',
+    actions : {
+      switch: ["on", "off"],
+      fanspeed: ["up", "down", "max", "min", "switch", "num"],
+      swing_mode: ["on", "off"]
     },
-    state: {
+    state : {
+      switch: null,
+      fanspeed: null,
+      swing_mode: null
+    }
+  },
+  'light' : {
+    type : 'light',
+    actions : {
+      switch: ["on", "off"],
+      color: ["num"],
+      brightness: ["up", "down", "max", "min", "num"]
+    },
+    state : {
+      switch: null,
+      color: null,
+      brightness: null
+    }
+  },
+  'media_player' : {
+    type : 'tv',
+    actions : {
+      switch: ["on", "off"],
+      volume: ["up", "down", "max", "min", "num"],
+      channel: ["next", "prev", "num"]
+    },
+    state : {
+      switch: null,
+      volume: null,
+      channel: null
+    }
+  },
+  'switch' : {
+    type : 'switch',
+    actions : {
+      switch: ["on", "off"]
+    },
+    state : {
       switch: null
-    },
-    type: 'light'
-  })
-}
+    }
+  }
+};
 
 exports.start = function(PORT, HASS_ADDRESS, cb) {
   // jayson is json-rpc server
@@ -31,7 +68,8 @@ exports.start = function(PORT, HASS_ADDRESS, cb) {
 
   const server = jayson.server({
     list: function(args, callback) {
-      var http= require('http');
+      var http = require('http');
+      var hass_status = "";
 
       console.log(JSON.stringify(args, null, 4));
       const hass_passwd = args.userAuth.userToken;
@@ -46,10 +84,31 @@ exports.start = function(PORT, HASS_ADDRESS, cb) {
         console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
         res.setEncoding('utf8');
         res.on('data', (chunk) => {
-          console.log(`BODY: ${chunk}`);
+          hass_status += chunk;
         });
         res.on('end', () => {
-          console.log('No more data in response.');
+          var status = JSON.parse(hass_status);
+
+          for(let i = 0; i < status.length; i++) {
+            var entity_id = status[i].entity_id;
+            var entity_type = entity_id.toString().split(".")[0];
+            var entity_name = entity_id.toString().split(".")[1];
+            var name = status[i].attributes.friendly_name || entity_name;
+
+            console.log(hass_entity_to_device[entity_type]);
+            if (hass_entity_to_device[entity_type]) {
+              devices.push({
+                deviceId: entity_id,
+                name: name,
+                type: hass_entity_to_device[entity_type].type,
+                actions: hass_entity_to_device[entity_type].actions,
+                state: hass_entity_to_device[entity_type].state,
+                offline: false,
+                deviceInfo: status[i].attributes
+              });
+            }
+          }
+          callback(null, devices);
         });
       });
       req.setTimeout(5000);
@@ -57,7 +116,6 @@ exports.start = function(PORT, HASS_ADDRESS, cb) {
         console.error(`problem with request: ${e.message}`);
       });
       req.end();
-      callback(null, devices);
     },
     get: function(args, callback) {
       console.log(JSON.stringify(args, null, 4));
