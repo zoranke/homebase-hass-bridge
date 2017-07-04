@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://git.coding.net/SchumyHao/homebase_hass_bridge.git"
+  },
   "dependencies": {
     "async": "^2.1.5",
     "debug": "^2.6.3",
     "extend": "^3.0.0",
     "ip": "^1.1.5",
-    "jayson": "^2.0.3"
-  },
-  "devDependencies": {
-    "flow-bin": "^0.41.0"
+    "koa": "^2.0.0",
+    "koa-bodyparser": "^3.2.0",
+    "koa-router": "^7.0.0"
   }
 }
