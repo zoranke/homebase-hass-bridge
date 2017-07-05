@@ -6,7 +6,7 @@
   "author": "schumyhao",
   "repository": {
     "type": "git",
-    "url": "https://git.coding.net/SchumyHao/homebase_hass_bridge.git"
+    "url": "https://github.com/SchumyHao/homebase-hass-bridge.git"
   },
   "bin": {
     "rhass": "bin/rhass.js"
