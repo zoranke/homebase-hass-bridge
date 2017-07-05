@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const controller = require('./controller');
+var cv = require('./const');
 
 const app = new Koa();
 
@@ -20,5 +21,6 @@ exports.start = function(PORT, cb) {
   app.listen(PORT);
 
   console.log('server listen on port %s', PORT);
+  console.log('homeassistant is running on %s:%s', cv.HASS_IP, cv.HASS_PORT);
   cb(null, PORT);
 };
