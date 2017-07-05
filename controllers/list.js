@@ -1,54 +1,4 @@
-//mock devices
-const hass_entity_to_device = {
-  'fan' : {
-    type : 'fan',
-    actions : {
-      switch: ["on", "off"],
-      fanspeed: ["up", "down", "max", "min", "switch", "num"],
-      swing_mode: ["on", "off"]
-    },
-    state : {
-      switch: null,
-      fanspeed: null,
-      swing_mode: null
-    }
-  },
-  'light' : {
-    type : 'light',
-    actions : {
-      switch: ["on", "off"],
-      color: ["num"],
-      brightness: ["up", "down", "max", "min", "num"]
-    },
-    state : {
-      switch: null,
-      color: null,
-      brightness: null
-    }
-  },
-  'media_player' : {
-    type : 'tv',
-    actions : {
-      switch: ["on", "off"],
-      volume: ["up", "down", "max", "min", "num"],
-      channel: ["next", "prev", "num"]
-    },
-    state : {
-      switch: null,
-      volume: null,
-      channel: null
-    }
-  },
-  'switch' : {
-    type : 'switch',
-    actions : {
-      switch: ["on", "off"]
-    },
-    state : {
-      switch: null
-    }
-  }
-};
+var cv = require('../const');
 
 module.exports = {
   'POST /list': async (ctx, next) => {
@@ -59,7 +9,7 @@ module.exports = {
     var hass_status = "";
     var p={};
     var hass_base_opt = {
-      uri: 'http://192.168.1.198:8123/api',
+      uri: 'http://'+cv.HASS_IP+':'+cv.HASS_PORT+'/api',
       headers: {
         'Content-Type':'application/json',
       },
@@ -82,13 +32,13 @@ module.exports = {
           var entity_name = entity_id.toString().split(".")[1];
           var name = status[i].attributes.friendly_name || entity_name;
 
-          if (hass_entity_to_device[entity_type]) {
+          if (cv.hass_entity_to_device[entity_type]) {
             devices.push({
               deviceId: entity_id,
               name: name,
-              type: hass_entity_to_device[entity_type].type,
-              actions: hass_entity_to_device[entity_type].actions,
-              state: hass_entity_to_device[entity_type].state,
+              type: cv.hass_entity_to_device[entity_type].type,
+              actions: cv.hass_entity_to_device[entity_type].actions,
+              state: cv.hass_entity_to_device[entity_type].state,
               offline: false,
               deviceInfo: status[i].attributes
             });
@@ -102,12 +52,9 @@ module.exports = {
       .catch(function (err) {
         p.status = 1;
         p.message = err.message;
-        ctx.response.message = p;
+        ctx.response.body = p;
         console.error(`problem with request: ${err.message}`);
       });
     console.log("list end");
   }
 };
-
-
-
