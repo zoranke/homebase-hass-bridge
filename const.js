@@ -21,6 +21,11 @@ module.exports = Object.freeze({
         if (hass_state.state == "on")
           state.switch = "on";
         return state;
+      },
+      domain: 'fan',
+      switch: {
+        on: 'turn_on',
+        off: 'turn_off'
       }
     },
     'light' : {
@@ -42,6 +47,11 @@ module.exports = Object.freeze({
         if (hass_state.state == "on")
           state.switch = "on";
         return state;
+      },
+      domain: 'light',
+      switch: {
+        on: 'turn_on',
+        off: 'turn_off'
       }
     },
     'media_player' : {
@@ -63,6 +73,11 @@ module.exports = Object.freeze({
         if (hass_state.state == "on")
           state.switch = "on";
         return state;
+      },
+      domain: 'media_player',
+      switch: {
+        on: 'turn_on',
+        off: 'turn_off'
       }
     },
     'switch' : {
@@ -80,6 +95,11 @@ module.exports = Object.freeze({
         if (hass_state.state == "on")
           state.switch = "on";
         return state;
+      },
+      domain: 'switch',
+      switch: {
+        on: 'turn_on',
+        off: 'turn_off'
       }
     }
   }
