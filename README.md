@@ -5,8 +5,8 @@ you need nodejs 8.0 + to run this sample
 ## Start server
 
 ```
-$ npm install
-$ node index.js
+$ npm install -g homebase-hass-bridge
+$ rhass
 ```
 
 ## What have done
