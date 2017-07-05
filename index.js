@@ -2,7 +2,6 @@ const hassServer = require('./bridge-hass');
 const ssdpServer = require('./ssdp-server');
 const ip = require('ip');
 const PORT = 9999;
-const HASS_IP = "192.168.1.198";
 
 // Start Bridge first
 hassServer.start(PORT, (err, port) => {
