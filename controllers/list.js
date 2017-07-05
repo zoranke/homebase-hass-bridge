@@ -1,5 +1,4 @@
 //mock devices
-const devices = [];
 const hass_entity_to_device = {
   'fan' : {
     type : 'fan',
@@ -51,40 +50,31 @@ const hass_entity_to_device = {
   }
 };
 
-var hass_base_opt = {
-  hostname: '192.168.1.198',
-  port: 8123,
-  path: '/api',
-  headers: {
-    'Content-Type':'application/json',
-  }
-};
-
-
 module.exports = {
   'POST /list': async (ctx, next) => {
     ctx.response.type = 'application/json';
+    ctx.response.status = 200;
 
-    var http = require('http');
+    var rp = require('request-promise');
     var hass_status = "";
     var p={};
+    var hass_base_opt = {
+      uri: 'http://192.168.1.198:8123/api',
+      headers: {
+        'Content-Type':'application/json',
+      },
+      json: true
+    };
+    var devices = [];
 
     const hass_passwd = ctx.request.body.userAuth.userToken;
-    console.log(hass_passwd);
 
-    hass_base_opt.path += "/states";
-    hass_base_opt.method = "GET";
+    hass_base_opt.uri += "/states";
     hass_base_opt.headers['x-ha-access'] = hass_passwd;
-    console.log(hass_base_opt);
-    const req = http.request(hass_base_opt, function (res) {
-      console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-        hass_status += chunk;
-      });
-      res.on('end', () => {
-        var status = JSON.parse(hass_status);
+
+    var reqp = rp(hass_base_opt);
+    await reqp.then(function (repos) {
+        var status = repos;
 
         for(let i = 0; i < status.length; i++) {
           var entity_id = status[i].entity_id;
@@ -103,20 +93,19 @@ module.exports = {
               deviceInfo: status[i].attributes
             });
           }
-          p.status = 0;
-          p.data = devices;
-          ctx.response.body = p;
         }
+        p.status = 0;
+        p.data = devices;
+        ctx.response.body = p;
+        console.log("done");
+      })
+      .catch(function (err) {
+        p.status = 1;
+        p.message = err.message;
+        ctx.response.message = p;
+        console.error(`problem with request: ${err.message}`);
       });
-    });
-    req.setTimeout(5000);
-    req.on('error', (e) => {
-      p.status = 1;
-      p.message = e.message;
-      ctx.response.body = p;
-      console.error(`problem with request: ${e.message}`);
-    });
-    req.end();
+    console.log("list end");
   }
 };
 
