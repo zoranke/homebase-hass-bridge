@@ -15,17 +15,18 @@ module.exports = {
       },
       json: true
     };
+    var hass_passwd = '';
 
-    console.log(ctx.request.body);
-    const hass_passwd = ctx.request.body.userAuth.userToken;
-    console.log(hass_passwd);
+    if (ctx.request.body.userAuth)
+      hass_passwd = ctx.request.body.userAuth.userToken;
+    hass_passwd = hass_passwd || cv.HASS_PASSWD;
+
     const device_id = ctx.request.body.device.deviceId;
-    console.log(device_id);
 
     hass_base_opt.uri += "/states/";
     hass_base_opt.uri += device_id;
-    hass_base_opt.headers['x-ha-access'] = hass_passwd;
-    console.log(hass_base_opt);
+    if (hass_passwd)
+      hass_base_opt.headers['x-ha-access'] = hass_passwd;
 
     var reqp = rp(hass_base_opt);
     await reqp.then(function (repos) {

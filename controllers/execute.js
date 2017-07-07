@@ -14,21 +14,20 @@ module.exports = {
       },
       json: true
     };
+    var hass_passwd = '';
 
-    console.log(ctx.request.body);
-    const hass_passwd = ctx.request.body.device.userAuth.userToken;
-    console.log(hass_passwd);
+    if (ctx.request.body.device.userAuth)
+      hass_passwd = ctx.request.body.device.userAuth.userToken;
+    hass_passwd = hass_passwd || cv.HASS_PASSWD;
+
     const device_id = ctx.request.body.device.deviceId;
-    console.log(device_id);
     const action_prop = ctx.request.body.action.property;
-    console.log(action_prop);
     const action_name = ctx.request.body.action.name;
-    console.log(action_name);
-
 
     hass_base_opt.uri += "/services/";
     hass_base_opt.method = "POST";
-    hass_base_opt.headers['x-ha-access'] = hass_passwd;
+    if (hass_passwd)
+      hass_base_opt.headers['x-ha-access'] = hass_passwd;
     var entity_type = device_id.toString().split(".")[0];
 
     if (dev = cv.hass_entity_to_device[entity_type]) {
@@ -38,11 +37,9 @@ module.exports = {
       hass_base_opt.body = {
         entity_id: device_id
       };
-      console.log(hass_base_opt);
 
       var reqp = rp(hass_base_opt);
       await reqp.then(function (repos) {
-          console.log(repos);
           p.status = 0;
           p.data = {};
           ctx.response.body = p;

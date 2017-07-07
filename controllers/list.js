@@ -16,11 +16,16 @@ module.exports = {
       json: true
     };
     var devices = [];
+    var hass_passwd = '';
 
-    const hass_passwd = ctx.request.body.userAuth.userToken;
+    if (ctx.request.body.userAuth)
+      hass_passwd = ctx.request.body.userAuth.userToken;
+    hass_passwd = hass_passwd || cv.HASS_PASSWD;
 
     hass_base_opt.uri += "/states";
-    hass_base_opt.headers['x-ha-access'] = hass_passwd;
+    if (hass_passwd)
+      hass_base_opt.headers['x-ha-access'] = hass_passwd;
+    console.log(hass_base_opt);
 
     var reqp = rp(hass_base_opt);
     await reqp.then(function (repos) {
