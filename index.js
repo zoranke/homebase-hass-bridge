@@ -7,4 +7,5 @@ const PORT = 9999;
 hassServer.start(PORT, (err, port) => {
   // then start the ssdp server to broad cast your servcie
   ssdpServer.start(`http://${ip.address()}:${port}`);
+  console.log(`ssdp server is on http://${ip.address()}:${port}`);
 });
