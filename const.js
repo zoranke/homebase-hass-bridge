@@ -1,11 +1,15 @@
 const hass_ip = process.env.HASS_IP || '127.0.0.1';
 const hass_port = process.env.HASS_PORT || '8123';
 const hass_passwd = process.env.HASS_PASSWD;
+const rhass_ip = process.env.RHASS_IP;
+const rhass_port = process.env.RHASS_PORT;
 
 module.exports = Object.freeze({
   HASS_IP: hass_ip,
   HASS_PORT: hass_port,
   HASS_PASSWD: hass_passwd,
+  RHASS_IP: rhass_ip,
+  RHASS_PORT: rhass_port,
   hass_entity_to_device: {
     'fan' : {
       type : 'fan',
