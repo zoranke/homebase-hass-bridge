@@ -3,7 +3,6 @@ var cv = require('../const');
 module.exports = {
   'POST /get': async (ctx, next) => {
     ctx.response.type = 'application/json';
-    ctx.response.status = 200;
 
     var rp = require('request-promise');
     var hass_state = "";
@@ -35,13 +34,13 @@ module.exports = {
         var entity_type = entity_id.toString().split(".")[0];
 
         if (dev = cv.hass_entity_to_device[entity_type]) {
-          state = dev.get_state(state);
-          console.log(state);
+          state = dev.states(state);
           p.status = 0;
           p.data = {};
           p.data.deviceId = entity_id;
           p.data.state = state;
           ctx.response.body = p;
+          ctx.response.status = 200;
         } else {
           p.status = 2;
           p.message = "unsuport device type";

@@ -1,8 +1,14 @@
+const ip = require('ip');
+const fan_dev = require('./devices/fan');
+const light_dev = require('./devices/light');
+const media_player_dev = require('./devices/media_player');
+const switch_dev = require('./devices/switch');
+
 const hass_ip = process.env.HASS_IP || '127.0.0.1';
 const hass_port = process.env.HASS_PORT || '8123';
 const hass_passwd = process.env.HASS_PASSWD;
-const rhass_ip = process.env.RHASS_IP;
-const rhass_port = process.env.RHASS_PORT;
+const rhass_ip = process.env.RHASS_IP || ip.address();
+const rhass_port = process.env.RHASS_PORT || '9999';
 
 module.exports = Object.freeze({
   HASS_IP: hass_ip,
@@ -11,105 +17,9 @@ module.exports = Object.freeze({
   RHASS_IP: rhass_ip,
   RHASS_PORT: rhass_port,
   hass_entity_to_device: {
-    'fan' : {
-      type : 'fan',
-      actions : {
-        switch: ["on", "off"],
-        fanspeed: ["up", "down", "max", "min", "switch", "num"],
-        swing_mode: ["on", "off"]
-      },
-      state : {
-        switch: null,
-        fanspeed: null,
-        swing_mode: null
-      },
-      get_state: (hass_state) => {
-        var state = {};
-        if (hass_state.state == "off")
-          state.switch = "off";
-        if (hass_state.state == "on")
-          state.switch = "on";
-        return state;
-      },
-      domain: 'fan',
-      switch: {
-        on: 'turn_on',
-        off: 'turn_off'
-      }
-    },
-    'light' : {
-      type : 'light',
-      actions : {
-        switch: ["on", "off"],
-        color: ["num"],
-        brightness: ["up", "down", "max", "min", "num"]
-      },
-      state : {
-        switch: null,
-        color: null,
-        brightness: null
-      },
-      get_state: (hass_state) => {
-        var state = {};
-        if (hass_state.state == "off")
-          state.switch = "off";
-        if (hass_state.state == "on")
-          state.switch = "on";
-        return state;
-      },
-      domain: 'light',
-      switch: {
-        on: 'turn_on',
-        off: 'turn_off'
-      }
-    },
-    'media_player' : {
-      type : 'tv',
-      actions : {
-        switch: ["on", "off"],
-        volume: ["up", "down", "max", "min", "num"],
-        channel: ["next", "prev", "num"]
-      },
-      state : {
-        switch: null,
-        volume: null,
-        channel: null
-      },
-      get_state: (hass_state) => {
-        var state = {};
-        if ((hass_state.state == "off") || (hass_state.state == "idle"))
-          state.switch = "off";
-        if (hass_state.state == "on")
-          state.switch = "on";
-        return state;
-      },
-      domain: 'media_player',
-      switch: {
-        on: 'turn_on',
-        off: 'turn_off'
-      }
-    },
-    'switch' : {
-      type : 'switch',
-      actions : {
-        switch: ["on", "off"]
-      },
-      state : {
-        switch: null
-      },
-      get_state: (hass_state) => {
-        var state = {};
-        if (hass_state.state == "off")
-          state.switch = "off";
-        if (hass_state.state == "on")
-          state.switch = "on";
-        return state;
-      },
-      domain: 'switch',
-      switch: {
-        on: 'turn_on',
-        off: 'turn_off'
-      }
-    }
+    'light' : light_dev,
+    'media_player' : media_player_dev,
+    'switch' : switch_dev,
+    'fan' : fan_dev
   }
 });

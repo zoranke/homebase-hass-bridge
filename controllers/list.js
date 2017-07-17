@@ -3,7 +3,6 @@ var cv = require('../const');
 module.exports = {
   'POST /list': async (ctx, next) => {
     ctx.response.type = 'application/json';
-    ctx.response.status = 200;
 
     var rp = require('request-promise');
     var hass_status = "";
@@ -37,20 +36,25 @@ module.exports = {
           var name = status[i].attributes.friendly_name || entity_name;
 
           if (cv.hass_entity_to_device[entity_type]) {
-            devices.push({
-              deviceId: entity_id,
-              name: name,
-              type: cv.hass_entity_to_device[entity_type].type,
-              actions: cv.hass_entity_to_device[entity_type].actions,
-              state: cv.hass_entity_to_device[entity_type].state,
-              offline: false,
-              deviceInfo: status[i].attributes
-            });
+            if (status[i].attributes.rhass_hidden)
+              console.log("%s is hidden in rhass", entity_id);
+            else {
+              devices.push({
+                deviceId: entity_id,
+                name: name,
+                type: cv.hass_entity_to_device[entity_type].type,
+                actions: cv.hass_entity_to_device[entity_type].actions(),
+                state: cv.hass_entity_to_device[entity_type].states(status[i]),
+                offline: false,
+                deviceInfo: status[i].attributes
+              });
+            }
           }
         }
         p.status = 0;
         p.data = devices;
         ctx.response.body = p;
+        ctx.response.status = 200;
         console.log("done");
       })
       .catch(function (err) {

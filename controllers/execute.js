@@ -3,7 +3,6 @@ var cv = require('../const');
 module.exports = {
   'POST /execute': async (ctx, next) => {
     ctx.response.type = 'application/json';
-    ctx.response.status = 200;
 
     var rp = require('request-promise');
     var p={};
@@ -31,18 +30,17 @@ module.exports = {
     var entity_type = device_id.toString().split(".")[0];
 
     if (dev = cv.hass_entity_to_device[entity_type]) {
-      hass_base_opt.uri += dev.domain;
-      hass_base_opt.uri += "/";
-      hass_base_opt.uri += dev[action_prop][action_name];
-      hass_base_opt.body = {
-        entity_id: device_id
-      };
+      hass_base_opt.uri += dev.get_uri(device_id, action_prop, action_name);
+      hass_base_opt.body = dev.get_body(device_id, action_prop, action_name);
 
       var reqp = rp(hass_base_opt);
       await reqp.then(function (repos) {
-          p.status = 0;
+          p = {};
+          p["status"] = 0;
           p.data = {};
+          p.data[action_prop] = action_name;
           ctx.response.body = p;
+          ctx.response.status = 200;
         })
         .catch(function (err) {
           p.status = 3;
