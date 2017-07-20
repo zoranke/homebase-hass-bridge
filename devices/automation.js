@@ -30,4 +30,4 @@ const support_actions = [
   }
 ];
 
-module.exports = new dev('switch', support_actions);
+module.exports = new dev('scene', support_actions);
