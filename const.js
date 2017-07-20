@@ -3,6 +3,7 @@ const fan_dev = require('./devices/fan');
 const light_dev = require('./devices/light');
 const media_player_dev = require('./devices/media_player');
 const switch_dev = require('./devices/switch');
+const automation_dev = require('./devices/automation');
 
 const hass_ip = process.env.HASS_IP || '127.0.0.1';
 const hass_port = process.env.HASS_PORT || '8123';
@@ -20,6 +21,7 @@ module.exports = Object.freeze({
     'light' : light_dev,
     'media_player' : media_player_dev,
     'switch' : switch_dev,
+    'automation' : automation_dev,
     'fan' : fan_dev
   }
 });
