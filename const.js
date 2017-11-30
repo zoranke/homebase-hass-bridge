@@ -5,7 +5,7 @@ const media_player_dev = require('./devices/media_player');
 const switch_dev = require('./devices/switch');
 
 const hass_ip = process.env.HASS_IP || '127.0.0.1';
-const hass_port = process.env.HASS_PORT || '8123';
+const hass_port = process.env.HASS_PORT || '8124';
 const hass_passwd = process.env.HASS_PASSWD;
 const rhass_ip = process.env.RHASS_IP || ip.address();
 const rhass_port = process.env.RHASS_PORT || '9999';
