@@ -2,7 +2,7 @@
 # Dockerfile for rhome_hass_bridge
 #
 
-FROM node:8.1
+FROM node:8.7
 
 MAINTAINER SchumyHao <bob-hjl@126.com>
 
