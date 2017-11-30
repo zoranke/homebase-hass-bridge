@@ -1,6 +1,6 @@
 {
   "name": "homebase-hass-bridge",
-  "version": "1.6",
+  "version": "1.61",
   "main": "index.js",
   "license": "MIT",
   "author": "schumyhao",
