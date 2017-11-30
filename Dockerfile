@@ -18,6 +18,6 @@ EXPOSE 9999
 ADD run.sh /root/run.sh
 
 ENV HASS_IP '127.0.0.1'
-ENV HASS_PORT '8123'
+ENV HASS_PORT '8124'
 
 CMD ["/root/run.sh"]
