@@ -7,6 +7,8 @@ FROM node:8.2
 MAINTAINER SchumyHao <bob-hjl@126.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm
+ENV TZ=Asia/Shanghai
 
 RUN apt-get update --fix-missing; \
     apt-get install -yq bash
